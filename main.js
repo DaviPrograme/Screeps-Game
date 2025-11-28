@@ -16,7 +16,7 @@ module.exports.loop = function () {
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     
 
-    if (harvesters.length < 5) {
+    if (harvesters.length < 200) {
         let screep = new Harvester('Harvester', Game.time, [WORK, CARRY, MOVE], 'harvester')
         screep.create()
     }

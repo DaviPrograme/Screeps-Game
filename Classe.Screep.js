@@ -9,19 +9,18 @@ let SpawnResultMessages = {
 };
 
 class Screep {
-    constructor(name, spawnTime, body, role) {
-        this.name = name;
+    constructor(type, spawnTime, body, role) {
+        this.name = type + spawnTime;
         this.spawnTime = spawnTime;
         this.role = role;
         this.body = body
     }
 
     create(){
-        const newName = this.name + this.spawnTime;
-        const result =  Math.abs(Game.spawns['Spawn1'].spawnCreep(this.body, newName, {
+        const result =  Math.abs(Game.spawns['Spawn1'].spawnCreep(this.body, this.name, {
             memory: { role: this.role }
         }))
-        console.log(`${newName}: ${SpawnResultMessages[result]}`)
+        console.log(`${this.name}: ${SpawnResultMessages[result]}`)
         return result;
     }
 
