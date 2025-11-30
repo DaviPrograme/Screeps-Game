@@ -25,11 +25,16 @@ class Screep {
     }
 
     isAlive () {
-        let alive = !!Game.creeps[this.name];
-        if(!alive){
+        let isAlive = !!Game.creeps[this.name];
+        if(!isAlive){
             console.log(`o screep ${this.name} morreu!`)
         }
-        return alive;
+        return isAlive;
+    }
+
+    cleanupMemory(){
+        console.log(`o screep ${this.name} foi interrado!`)
+        delete Memory.creeps[this.name];
     }
 }
 
