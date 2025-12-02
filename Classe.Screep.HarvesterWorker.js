@@ -44,10 +44,6 @@ class HarvesterWorker extends Screep {
         console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Transferencia de energia realizada com sucesso!!`)
         this.energySourceTargetID = null;
       }
-      
-      creep.transfer(destinationTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-        ? creep.moveTo(destinationTarget)
-        : (this.energyDestinationTargetID = null);
     }
   }
 
