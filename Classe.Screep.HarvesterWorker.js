@@ -1,4 +1,5 @@
 const Screep = require("Classe.Screep");
+const { HarvestResultMessages,  TransferResultMessages }  = require('resultMessages');
 
 class HarvesterWorker extends Screep {
   constructor(type, spawnTime, body, role) {
@@ -16,16 +17,14 @@ class HarvesterWorker extends Screep {
     if (this.energySourceTargetID) {
       let creep = Game.creeps[this.name];
       let sourceTarget = Game.getObjectById(this.energySourceTargetID)
+      let harvestCode = creep.harvest(sourceTarget)
 
-      if(this.name == "Harvester40463"){
-        console.log(`creep: ${creep}\ncapacity: ${creep.harvest(this.energySourceTargetID)}\nsource: ${JSON.stringify(this.energySourceTargetID.id)}`)
-      }
-
-      if (creep.store.getFreeCapacity() != 0 && 
-          creep.harvest(sourceTarget) == ERR_NOT_IN_RANGE) {
-            console.log("teste")
+      if (harvestCode == ERR_NOT_IN_RANGE) {
             creep.moveTo(sourceTarget);
+      } else if (harvestCode != OK) {
+        console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Error: ${HarvestResultMessages[harvestCode]}`)
       } else if (creep.store.getFreeCapacity() == 0) {
+        console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Transferencia de energia realizada com sucesso!!`)
         this.energySourceTargetID = null;
       }
     }
@@ -35,6 +34,16 @@ class HarvesterWorker extends Screep {
     if (this.energyDestinationTargetID) {
       let creep = Game.creeps[this.name];
       let destinationTarget = Game.getObjectById(this.energyDestinationTargetID)
+      let transferCode = creep.transfer(destinationTarget, RESOURCE_ENERGY)
+
+      if (transferCode == ERR_NOT_IN_RANGE) {
+            creep.moveTo(sourceTarget);
+      } else if (transferCode != OK) {
+        console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Error: ${TransferResultMessages[transferCode]}`)
+      } else {
+        console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Transferencia de energia realizada com sucesso!!`)
+        this.energySourceTargetID = null;
+      }
       
       creep.transfer(destinationTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
         ? creep.moveTo(destinationTarget)
@@ -43,7 +52,6 @@ class HarvesterWorker extends Screep {
   }
 
   processEnergyRoute(){
-    console.log(`${this.name} -> ${this.energySourceTargetID} ${this.energyDestinationTargetID}`)
     this.energySourceTargetID ? this.gatherEnergy() : this.deliverEnergy();
   }
 
@@ -52,7 +60,6 @@ class HarvesterWorker extends Screep {
   }
 
   saveState(){
-    // console.log(`JESUS33: ${JSON.stringify(this)}`)
     let creep = Game.creeps[this.name];
     creep.memory["state"] = this
    

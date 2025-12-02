@@ -44,13 +44,11 @@ class HarvesterManager {
     run(){
         this.harvesters = this.harvesters.filter(harvester => {
             let isAlive = harvester.isAlive();
-            console.log(`O ${harvester.name} esta ${isAlive ? "Vivo" : "Morto"}!`)
 
             if (!isAlive){
                 harvester.cleanupMemory();
             } else {
                 if(!harvester.isOnRoute()){
-                    console.log("Esta com rota definida!")
                     this.assignEnergyRoute(harvester);
                 }
                 harvester.processEnergyRoute()

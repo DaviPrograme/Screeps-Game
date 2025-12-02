@@ -1,12 +1,4 @@
-let SpawnResultMessages = {
-    0: "Creep foi criado com sucesso",
-    1: "Você não é dono do spawn",
-    3: "Já existe um creep com esse nome",
-    4: "O spawn está construindo outro creep",
-    6: "Não há energia suficiente",
-    10: "Parâmetros (nome ou body) inválidos",
-    14: "O nível de Controlador é baixo para esse body"
-};
+const { SpawnResultMessages }  = require('resultMessages');
 
 class Screep {
     constructor(type, spawnTime, body, role) {
@@ -17,9 +9,9 @@ class Screep {
     }
 
     create(){
-        const result =  Math.abs(Game.spawns['Spawn1'].spawnCreep(this.body, this.name, {
+        const result =  Game.spawns['Spawn1'].spawnCreep(this.body, this.name, {
             memory: { role: this.role }
-        }))
+        })
         console.log(`${this.name}: ${SpawnResultMessages[result]}`)
         return result;
     }
@@ -27,7 +19,7 @@ class Screep {
     isAlive () {
         let isAlive = !!Game.creeps[this.name];
         if(!isAlive){
-            console.log(`o screep ${this.name} morreu!`)
+            console.log(`o creep ${this.name} morreu!`)
         }
         return isAlive;
     }

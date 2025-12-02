@@ -8,7 +8,7 @@ module.exports.loop = function () {
         harvesterManager.recoverAll();
     }
     
-     if (harvesterManager.countWorkers() < 10) {
+     if (harvesterManager.countWorkers() < 2) {
         harvesterManager.createWorker()
     }
 
