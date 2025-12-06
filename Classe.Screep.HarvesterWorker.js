@@ -1,5 +1,4 @@
 const Screep = require("Classe.Screep");
-const { HarvestResultMessages,  TransferResultMessages }  = require('resultMessages');
 const { buildActionResult }  = require('utils');
 
 class HarvesterWorker extends Screep {
@@ -23,10 +22,7 @@ class HarvesterWorker extends Screep {
 
       if (harvestCode == ERR_NOT_IN_RANGE) {
             moveCode = creep.moveTo(sourceTarget);
-      } else if (harvestCode != OK) {
-        console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Error: ${HarvestResultMessages[harvestCode]}`)
-      } else if (creep.store.getFreeCapacity() == 0) {
-        console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Transferencia de energia realizada com sucesso!!`)
+      } else if (harvestCode == OK) {
         this.energySourceTargetID = null;
       }
       return buildActionResult("harvest", harvestCode, moveCode);
@@ -42,11 +38,8 @@ class HarvesterWorker extends Screep {
       let moveCode = null;
 
       if (transferCode == ERR_NOT_IN_RANGE) {
-            moveCode = creep.moveTo(destinationTarget);
-      } else if (transferCode != OK) {
-        console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Error: ${TransferResultMessages[transferCode]}`)
-      } else {
-        console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Transferencia de energia realizada com sucesso!!`)
+        moveCode = creep.moveTo(destinationTarget);
+      } else if (transferCode == OK) {
         this.energyDestinationTargetID = null;
       }
       return buildActionResult("transfer", transferCode, moveCode);

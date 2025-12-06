@@ -44,22 +44,47 @@ class HarvesterManager {
 
     handleActionHarvest(creep, actionResult){
         const {actionCode, moveCode} = actionResult
-        if(actionCode == ERR_NOT_IN_RANGE){
-            console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
-        } else if (actionCode != OK){
-            console.log("tratando erro na mineração da energia!")
-            creep.energySourceTargetID = null
-        }
+
+        switch (actionCode){
+            case OK:
+                console.log(`Creep: ${creep.name} -> methodo: harvest -> Coleta de energia completada com sucesso!!`);
+                break;
+            case ERR_NOT_IN_RANGE:
+                console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
+                break;
+            case ERR_NOT_ENOUGH_RESOURCES:
+            case ERR_INVALID_TARGET:
+            case ERR_NO_BODYPART:
+            case ERR_NOT_OWNER:
+            case ERR_NOT_FOUND:
+            case ERR_BUSY:
+                console.log(`Creep: ${this.name} -> methodo: harvest -> Error: ${HarvestResultMessages[actionCode]}`)
+            default:
+                console.log(`Codigo nao encontrado na tabela de HarvestResultMessages: `, actionCode)
+        };
     }
 
     handleActionDeliver(creep, actionResult){
         const {actionCode, moveCode} = actionResult
-        if(actionCode == ERR_NOT_IN_RANGE){
-            console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
-        } else if (actionCode != OK){
-            console.log("tratando erro na entrega da energia!")
-            creep.energyDestinationTargetID = null
-        }
+        
+         switch (actionCode){
+            case OK:
+                console.log(`Creep: ${creep.name} -> methodo: transfer -> Transferencia de energia completada com sucesso!!`);
+                break;
+            case ERR_NOT_IN_RANGE:
+                console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
+                break;
+            case ERR_NOT_ENOUGH_RESOURCES:
+            case ERR_FULL:
+            case ERR_INVALID_TARGET:
+            case ERR_NO_BODYPART:
+            case ERR_NOT_OWNER:
+            case ERR_NOT_FOUND:
+            case ERR_BUSY:
+                 console.log(`Creep: ${this.name} -> methodo: transfer -> Error: ${TransferResultMessages[actionCode]}`)
+            default:
+                console.log(`Codigo nao encontrado na tabela de TransferResultMessages: `, actionCode)
+        };
     }
 
     handleBuildResult(creep, actionResult){
