@@ -1,4 +1,5 @@
 const HarvesterWorker = require('Classe.Screep.HarvesterWorker')
+const { HarvestResultMessages,  TransferResultMessages, MoveResultMessages }  = require('resultMessages');
 
 class HarvesterManager {
     constructor(){
@@ -41,6 +42,40 @@ class HarvesterManager {
         }
     }
 
+    handleActionHarvest(creep, actionResult){
+        const {actionCode, moveCode} = actionResult
+        if(actionCode == ERR_NOT_IN_RANGE){
+            console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
+        } else if (actionCode != OK){
+            console.log("tratando erro na mineração da energia!")
+            creep.energySourceTargetID = null
+        }
+    }
+
+    handleActionDeliver(creep, actionResult){
+        const {actionCode, moveCode} = actionResult
+        if(actionCode == ERR_NOT_IN_RANGE){
+            console.log(`Creep: ${creep.name} move status -> ${MoveResultMessages[moveCode]}`)
+        } else if (actionCode != OK){
+            console.log("tratando erro na entrega da energia!")
+            creep.energyDestinationTargetID = null
+        }
+    }
+
+    handleBuildResult(creep, actionResult){
+        if(actionResult){
+            const { method } = actionResult
+
+            if(method == "harvest"){
+                this.handleActionHarvest(creep, actionResult)
+            }else if(method == "transfer"){
+                this.handleActionDeliver(creep, actionResult)
+            }else{
+                console.log(`metodo ${method} nao encontrado!!!`);
+            }
+        }
+    }
+
     run(){
         this.harvesters = this.harvesters.filter(harvester => {
             let isAlive = harvester.isAlive();
@@ -51,7 +86,8 @@ class HarvesterManager {
                 if(!harvester.isOnRoute()){
                     this.assignEnergyRoute(harvester);
                 }
-                harvester.processEnergyRoute()
+                // console.log(JSON.stringify(harvester.processEnergyRoute()))
+                this.handleBuildResult(harvester, harvester.processEnergyRoute())
                 harvester.saveState();
             }
             return isAlive;

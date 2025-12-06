@@ -1,5 +1,6 @@
 const Screep = require("Classe.Screep");
 const { HarvestResultMessages,  TransferResultMessages }  = require('resultMessages');
+const { buildActionResult }  = require('utils');
 
 class HarvesterWorker extends Screep {
   constructor(type, spawnTime, body, role) {
@@ -18,37 +19,43 @@ class HarvesterWorker extends Screep {
       let creep = Game.creeps[this.name];
       let sourceTarget = Game.getObjectById(this.energySourceTargetID)
       let harvestCode = creep.harvest(sourceTarget)
+      let moveCode = null;
 
       if (harvestCode == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sourceTarget);
+            moveCode = creep.moveTo(sourceTarget);
       } else if (harvestCode != OK) {
         console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Error: ${HarvestResultMessages[harvestCode]}`)
       } else if (creep.store.getFreeCapacity() == 0) {
         console.log(`Creep: ${this.name} -> methodo: gatherEnergy -> Transferencia de energia realizada com sucesso!!`)
         this.energySourceTargetID = null;
       }
+      return buildActionResult("harvest", harvestCode, moveCode);
     }
+    return null;
   }
 
   deliverEnergy() {
     if (this.energyDestinationTargetID) {
       let creep = Game.creeps[this.name];
-      let destinationTarget = Game.getObjectById(this.energyDestinationTargetID)
-      let transferCode = creep.transfer(destinationTarget, RESOURCE_ENERGY)
+      let destinationTarget = Game.getObjectById(this.energyDestinationTargetID);
+      let transferCode = creep.transfer(destinationTarget, RESOURCE_ENERGY);
+      let moveCode = null;
 
       if (transferCode == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sourceTarget);
+            moveCode = creep.moveTo(destinationTarget);
       } else if (transferCode != OK) {
         console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Error: ${TransferResultMessages[transferCode]}`)
       } else {
         console.log(`Creep: ${this.name} -> methodo: deliverEnergy -> Transferencia de energia realizada com sucesso!!`)
-        this.energySourceTargetID = null;
+        this.energyDestinationTargetID = null;
       }
+      return buildActionResult("transfer", transferCode, moveCode);
     }
+    return null;
   }
 
   processEnergyRoute(){
-    this.energySourceTargetID ? this.gatherEnergy() : this.deliverEnergy();
+    return this.energySourceTargetID ? this.gatherEnergy() : this.deliverEnergy();
   }
 
   isOnRoute() {
